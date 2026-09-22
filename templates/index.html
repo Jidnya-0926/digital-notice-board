@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Digital Notice Board</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Digital Notice Board</h1>
+
+    <p>College Notice Management System</p>
+
+    <a href="/login">Admin Login</a>
+
+</header>
+
+
+<div class="container">
+
+    <h2>Latest Notices</h2>
+<form method="GET" class="filter-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search notices..."
+        value="{{ search }}"
+    >
+
+    <select name="category">
+
+        <option value="">All Categories</option>
+
+        <option value="Examination"
+            {% if category == "Examination" %}selected{% endif %}>
+            Examination
+        </option>
+
+        <option value="Event"
+            {% if category == "Event" %}selected{% endif %}>
+            Event
+        </option>
+
+        <option value="Academic"
+            {% if category == "Academic" %}selected{% endif %}>
+            Academic
+        </option>
+
+        <option value="General"
+            {% if category == "General" %}selected{% endif %}>
+            General
+        </option>
+
+    </select>
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+    {% for notice in notices %}
+
+    <div class="notice">
+
+        {% if notice.important %}
+
+        <span class="important">
+            IMPORTANT
+        </span>
+
+        {% endif %}
+
+
+        <h3>{{ notice.title }}</h3>
+
+        <p>
+            <b>Category:</b>
+            {{ notice.category }}
+        </p>
+
+        <p>
+            <b>Date:</b>
+            {{ notice.date }}
+        </p>
+
+        <p>
+            {{ notice.description }}
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+
+</html>

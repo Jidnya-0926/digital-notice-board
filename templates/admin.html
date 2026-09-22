@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>Admin Dashboard</h1>
+
+    <a href="/">
+        View Notice Board
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <a class="button" href="/add">
+        + Add New Notice
+    </a>
+
+
+    <h2>Manage Notices</h2>
+
+
+    {% for notice in notices %}
+
+    <div class="notice">
+
+        <h3>
+            {{ notice.title }}
+        </h3>
+
+
+        <p>
+
+            {{ notice.category }}
+
+            |
+
+            {{ notice.date }}
+
+        </p>
+
+
+        <p>
+            {{ notice.description }}
+        </p>
+
+
+        <a href="/delete/{{ notice.id }}"
+           onclick="return confirm('Delete this notice?')">
+
+            Delete
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+
+</html>
