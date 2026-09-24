@@ -27,6 +27,86 @@ def init_db():
         )
     """)
 
+    count = conn.execute(
+        "SELECT COUNT(*) FROM notices"
+    ).fetchone()[0]
+
+    if count == 0:
+
+        default_notices = [
+
+            (
+                "Internal Assessment 2 Schedule",
+                "Examination",
+                "2026-10-05",
+                "Internal Assessment 2 examinations will begin from 5 October 2026. Students are requested to check the examination timetable and prepare accordingly.",
+                1
+            ),
+
+            (
+                "Annual College Fest 2026",
+                "Event",
+                "2026-10-15",
+                "The Annual College Fest 2026 will be conducted on the college campus. Students interested in participating should register with their respective coordinators.",
+                0
+            ),
+
+            (
+                "Project Submission Deadline",
+                "Academic",
+                "2026-10-20",
+                "All students must submit their academic mini-projects by 20 October 2026. Late submissions may not be accepted.",
+                1
+            ),
+
+            (
+                "College Library Timings",
+                "General",
+                "2026-09-30",
+                "The college library will remain open from 8:00 AM to 6:00 PM on working days. Students are requested to carry their valid college ID cards.",
+                0
+            ),
+
+            (
+                "Semester End Examination Form",
+                "Examination",
+                "2026-10-25",
+                "Students must complete the Semester End Examination form submission before the deadline. Verify all personal and academic details before submitting.",
+                1
+            ),
+
+            (
+                "Technical Workshop on Web Development",
+                "Event",
+                "2026-10-08",
+                "A hands-on technical workshop on modern web development will be conducted in the computer laboratory. Students from all IT-related branches can participate.",
+                0
+            ),
+
+            (
+                "Attendance Requirement Notice",
+                "Academic",
+                "2026-10-12",
+                "Students are reminded to maintain the required attendance percentage for appearing in the semester examinations.",
+                1
+            ),
+
+            (
+                "Campus Cleanliness Drive",
+                "General",
+                "2026-10-03",
+                "The college will organize a campus cleanliness drive. Students are encouraged to participate and help maintain a clean and healthy campus environment.",
+                0
+            )
+
+        ]
+
+        conn.executemany("""
+            INSERT INTO notices
+            (title, category, date, description, important)
+            VALUES (?, ?, ?, ?, ?)
+        """, default_notices)
+
     conn.commit()
     conn.close()
 
