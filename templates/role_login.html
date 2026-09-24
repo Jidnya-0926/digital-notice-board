@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Digital Notice Board - Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body class="login-page">
+
+
+<div class="role-login-container">
+
+
+    <div class="login-header">
+
+        <div class="login-icon">
+            📢
+        </div>
+
+        <h1>Digital Notice Board</h1>
+
+        <p>
+            College Notice Management System
+        </p>
+
+    </div>
+
+
+    <div class="login-options">
+
+
+        <!-- Student Login -->
+
+        <div class="role-card student-card">
+
+            <div class="role-icon">
+                👨‍🎓
+            </div>
+
+            <h2>Student</h2>
+
+            <p>
+                Login using your Student ERP ID
+                to view college notices and events.
+            </p>
+
+            <a href="/student-login"
+               class="role-button student-button">
+
+                Student Login →
+
+            </a>
+
+        </div>
+
+
+        <!-- Admin Login -->
+
+        <div class="role-card admin-card">
+
+            <div class="role-icon">
+                🔐
+            </div>
+
+            <h2>Admin</h2>
+
+            <p>
+                Login to manage notices,
+                events and registrations.
+            </p>
+
+            <a href="/login"
+               class="role-button admin-button">
+
+                Admin Login →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="login-footer">
+
+        <p>
+            © 2026 Digital Notice Board
+        </p>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

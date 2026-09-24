@@ -29,7 +29,7 @@
         >
 
 
-        <select name="category" required>
+        <select name="category" id="category" required>
 
             <option value="">
                 Select Category
@@ -52,6 +52,25 @@
             </option>
 
         </select>
+
+
+        <!-- Event Registration Link -->
+
+        <div id="registration-section"
+             style="display: none;">
+
+            <input
+                type="url"
+                name="registration_link"
+                id="registration_link"
+                placeholder="Event Registration Link (https://...)"
+            >
+
+            <small>
+                Add a registration link for this event.
+            </small>
+
+        </div>
 
 
         <input
@@ -88,6 +107,42 @@
     </form>
 
 </div>
+
+
+<script>
+
+    const category =
+        document.getElementById("category");
+
+    const registrationSection =
+        document.getElementById("registration-section");
+
+
+    function toggleRegistration() {
+
+        if (category.value === "Event") {
+
+            registrationSection.style.display = "block";
+
+        } else {
+
+            registrationSection.style.display = "none";
+
+        }
+
+    }
+
+
+    category.addEventListener(
+        "change",
+        toggleRegistration
+    );
+
+
+    toggleRegistration();
+
+</script>
+
 
 </body>
 

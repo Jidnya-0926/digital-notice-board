@@ -1,110 +1,600 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
+    background: linear-gradient(135deg, #eef2ff, #fdf2f8, #ecfeff);
+    color: #1f2937;
+    min-height: 100vh;
 }
 
 
+/* =========================
+   HEADER
+========================= */
+
 header {
-    background: #1f3c88;
+    position: relative;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777);
     color: white;
-    padding: 25px;
+    padding: 55px 20px;
     text-align: center;
+    overflow: hidden;
+}
+
+
+header::before {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    top: -120px;
+    left: -80px;
+}
+
+
+header::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    bottom: -120px;
+    right: -70px;
+}
+
+
+header h1 {
+    position: relative;
+    z-index: 1;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+
+header p {
+    position: relative;
+    z-index: 1;
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 20px;
 }
 
 
 header a {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
     color: white;
     text-decoration: none;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
 }
 
+
+header a:hover {
+    background: white;
+    color: #4f46e5;
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
 
 .container {
-    width: 80%;
-    margin: 30px auto;
+    width: 85%;
+    max-width: 1100px;
+    margin: 40px auto;
 }
 
 
-.notice {
-    background: white;
-    padding: 20px;
-    margin: 15px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px #ccc;
+.container > h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 25px;
+    color: #312e81;
 }
 
 
-.notice h3 {
-    margin-top: 5px;
+/* =========================
+   SEARCH / FILTER
+========================= */
+
+.filter-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 18px;
+    margin-bottom: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.12);
+    backdrop-filter: blur(10px);
 }
 
 
-.important {
-    background: #d93025;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
+.filter-form input,
+.filter-form select {
+    width: auto;
+    flex: 1;
+    margin: 0;
 }
 
 
-button,
-.button {
-    background: #1f3c88;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    cursor: pointer;
+.filter-form button {
+    padding: 13px 24px;
 }
 
 
-.login-box,
-.form-box {
-    width: 400px;
-    margin: 80px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px #ccc;
-}
-
+/* =========================
+   INPUTS
+========================= */
 
 input,
 select,
 textarea {
     width: 100%;
-    padding: 12px;
+    padding: 13px 15px;
     margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    background: white;
+    color: #1f2937;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
 
 textarea {
-    height: 120px;
-}
-.filter-form {
-    background: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px #ccc;
+    height: 130px;
+    resize: vertical;
 }
 
-.filter-form input,
-.filter-form select {
-    width: 35%;
-    margin-right: 10px;
-}
 
-.filter-form button {
+/* =========================
+   BUTTONS
+========================= */
+
+button,
+.button {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
     padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+
+button:hover,
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.3);
+}
+
+
+/* =========================
+   NOTICE CARD
+========================= */
+
+.notice {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 18px;
+    border-left: 6px solid #6366f1;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+    transition: 0.3s;
+}
+
+
+.notice:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.16);
+}
+
+
+.notice h3 {
+    color: #312e81;
+    font-size: 22px;
+    margin: 12px 0;
+}
+
+
+.notice p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: #4b5563;
+}
+
+
+.notice p b {
+    color: #374151;
+}
+
+
+/* =========================
+   IMPORTANT BADGE
+========================= */
+
+.important {
+    display: inline-block;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+
+/* =========================
+   EVENT REGISTRATION
+========================= */
+
+.register-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 13px 23px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2);
+}
+
+
+.register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(16, 185, 129, 0.3);
+}
+
+
+/* =========================
+   LOGIN / ADD NOTICE FORM
+========================= */
+
+.login-box,
+.form-box {
+    width: 420px;
+    max-width: 90%;
+    margin: 70px auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(79, 70, 229, 0.15);
+}
+
+
+.login-box h2,
+.form-box h2 {
+    text-align: center;
+    color: #312e81;
+    margin-bottom: 25px;
+}
+
+
+.form-box small {
+    display: block;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   CHECKBOX
+========================= */
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+    color: #374151;
+}
+
+
+label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+
+/* =========================
+   NO NOTICES
+========================= */
+
+.no-notices {
+    text-align: center;
+    padding: 50px 30px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+}
+
+
+.no-notices h3 {
+    color: #4f46e5;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+    header {
+        padding: 40px 15px;
+    }
+
+
+    header h1 {
+        font-size: 30px;
+    }
+
+
+    header p {
+        font-size: 15px;
+    }
+
+
+    .container {
+        width: 92%;
+    }
+
+
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .filter-form input,
+    .filter-form select {
+        width: 100%;
+    }
+
+
+    .filter-form button {
+        width: 100%;
+    }
+
+
+    .notice {
+        padding: 20px;
+    }
+
+
+    .notice h3 {
+        font-size: 19px;
+    }
+
+
+    .login-box,
+    .form-box {
+        margin: 40px auto;
+        padding: 25px;
+    }
+
+}
+/* =========================
+   ROLE LOGIN PAGE
+========================= */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+
+.role-login-container {
+    width: 900px;
+    max-width: 95%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(79, 70, 229, 0.18);
+}
+
+
+.login-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+
+.login-icon {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+
+.login-header h1 {
+    color: #312e81;
+    margin-bottom: 8px;
+}
+
+
+.login-header p {
+    color: #6b7280;
+}
+
+
+.login-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+
+.role-card {
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+
+.role-card:hover {
+    transform: translateY(-7px);
+}
+
+
+.student-card {
+    background: linear-gradient(
+        135deg,
+        #eef2ff,
+        #e0e7ff
+    );
+}
+
+
+.admin-card {
+    background: linear-gradient(
+        135deg,
+        #fce7f3,
+        #fae8ff
+    );
+}
+
+
+.role-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+
+.role-card h2 {
+    color: #312e81;
+    margin-bottom: 12px;
+}
+
+
+.role-card p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+
+.role-button {
+    display: inline-block;
+    padding: 13px 25px;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+
+.student-button {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #6366f1
+    );
+}
+
+
+.admin-button {
+    background: linear-gradient(
+        135deg,
+        #db2777,
+        #9333ea
+    );
+}
+
+
+.role-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.login-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+
+/* Student Login */
+
+.student-login-box {
+    text-align: center;
+}
+
+
+.student-login-box .role-icon {
+    font-size: 55px;
+}
+
+
+.login-subtitle {
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+
+.back-login {
+    margin-top: 20px;
+}
+
+
+.back-login a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .login-options {
+        grid-template-columns: 1fr;
+    }
+
+    .role-login-container {
+        padding: 25px;
+    }
+
 }
