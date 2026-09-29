@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Student Registration</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body class="login-page">
+
+<div class="login-box student-register-box">
+
+    <div class="role-icon">
+        🎓
+    </div>
+
+    <h2>Student Registration</h2>
+
+    <p class="login-subtitle">
+        Register using your Xavier College details
+    </p>
+
+    {% if error %}
+
+    <div class="error-message">
+        ⚠️ {{ error }}
+    </div>
+
+    {% endif %}
+
+    {% if success %}
+
+    <div class="success-message">
+        ✅ {{ success }}
+    </div>
+
+    <a href="/student-login"
+       class="role-button student-button">
+
+        Go to Student Login →
+
+    </a>
+
+    {% else %}
+
+    <form method="POST"
+          id="registration-form">
+
+        <input
+            type="text"
+            name="college_id"
+            id="college_id"
+            placeholder="College ID (Example: 202403044)"
+            maxlength="9"
+            required
+        >
+
+        <small id="college-id-message">
+            Enter your 9-digit College ID.
+        </small>
+
+        <input
+            type="text"
+            name="student_name"
+            id="student_name"
+            placeholder="Student Name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="202403044.rahul@student.xavier.ac.in"
+            required
+        >
+
+        <small id="email-message">
+            Use your Xavier student email.
+        </small>
+
+        <div class="password-info">
+
+            🔐 Password will be your College ID
+
+        </div>
+
+        <button type="submit"
+                id="register-button">
+
+            Register →
+
+        </button>
+
+    </form>
+
+    {% endif %}
+
+    <p class="back-login">
+
+        <a href="/student-login">
+            ← Back to Student Login
+        </a>
+
+    </p>
+
+</div>
+
+
+<script>
+
+const collegeId =
+    document.getElementById("college_id");
+
+const email =
+    document.getElementById("email");
+
+const collegeIdMessage =
+    document.getElementById("college-id-message");
+
+const emailMessage =
+    document.getElementById("email-message");
+
+const registerButton =
+    document.getElementById("register-button");
+
+
+function validateRegistration() {
+
+    if (!collegeId || !email || !registerButton) {
+        return;
+    }
+
+    const id = collegeId.value.trim();
+
+    const emailValue =
+        email.value.trim().toLowerCase();
+
+    const idValid =
+        /^\d{9}$/.test(id);
+
+    const emailPattern =
+        new RegExp(
+            "^" +
+            id +
+            "\\.[a-zA-Z][a-zA-Z0-9._-]*" +
+            "@student\\.xavier\\.ac\\.in$"
+        );
+
+    const emailValid =
+        idValid &&
+        emailPattern.test(emailValue);
+
+    if (!idValid) {
+
+        collegeIdMessage.innerHTML =
+            "❌ College ID must contain 9 digits.";
+
+    } else {
+
+        collegeIdMessage.innerHTML =
+            "✅ College ID format is valid.";
+
+    }
+
+    if (!emailValue) {
+
+        emailMessage.innerHTML =
+            "Use your Xavier student email.";
+
+    } else if (!emailValid) {
+
+        emailMessage.innerHTML =
+            "❌ Email must match: " +
+            id +
+            ".studentname@student.xavier.ac.in";
+
+    } else {
+
+        emailMessage.innerHTML =
+            "✅ Xavier student email format is valid.";
+
+    }
+
+}
+
+
+if (collegeId) {
+
+    collegeId.addEventListener(
+        "input",
+        validateRegistration
+    );
+
+}
+
+
+if (email) {
+
+    email.addEventListener(
+        "input",
+        validateRegistration
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>

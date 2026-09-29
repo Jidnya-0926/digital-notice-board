@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Notice</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+    <h2>✏️ Edit Notice</h2>
+
+    <form method="POST">
+
+        <input
+            type="text"
+            name="title"
+            value="{{ notice.title }}"
+            placeholder="Notice Title"
+            required
+        >
+
+        <select name="category"
+                id="category"
+                required>
+
+            <option value="">
+                Select Category
+            </option>
+
+            <option value="Examination"
+                {% if notice.category == "Examination" %}
+                selected
+                {% endif %}>
+                Examination
+            </option>
+
+            <option value="Event"
+                {% if notice.category == "Event" %}
+                selected
+                {% endif %}>
+                Event
+            </option>
+
+            <option value="Academic"
+                {% if notice.category == "Academic" %}
+                selected
+                {% endif %}>
+                Academic
+            </option>
+
+            <option value="General"
+                {% if notice.category == "General" %}
+                selected
+                {% endif %}>
+                General
+            </option>
+
+        </select>
+
+
+        <div id="registration-section">
+
+            <input
+                type="url"
+                name="registration_link"
+                value="{{ notice.registration_link or '' }}"
+                placeholder="Event Registration Link (https://...)"
+            >
+
+        </div>
+
+
+        <input
+            type="date"
+            name="date"
+            value="{{ notice.date }}"
+            required
+        >
+
+
+        <textarea
+            name="description"
+            placeholder="Notice Description"
+            required
+        >{{ notice.description }}</textarea>
+
+
+        <label>
+
+            <input
+                type="checkbox"
+                name="important"
+                {% if notice.important %}
+                checked
+                {% endif %}
+            >
+
+            ⚠️ Mark as Important
+
+        </label>
+
+
+        <button type="submit">
+            💾 Save Changes
+        </button>
+
+
+        <a href="/admin"
+           class="cancel-button">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

@@ -53,6 +53,17 @@ def test_student_login_page():
     assert response.status_code == 200
 
 
+def test_student_register_page():
+
+    app.config["TESTING"] = True
+
+    client = app.test_client()
+
+    response = client.get("/student-register")
+
+    assert response.status_code == 200
+
+
 def test_admin_login_page():
 
     app.config["TESTING"] = True
@@ -118,23 +129,81 @@ def test_student_notices_requires_login():
     assert response.location.endswith("/")
 
 
-def test_student_can_login_and_view_notices():
+def test_invalid_student_registration():
 
     app.config["TESTING"] = True
 
     client = app.test_client()
 
-    login_response = client.post(
+    response = client.post(
+        "/student-register",
+        data={
+            "college_id": "202403044",
+            "student_name": "Rahul",
+            "email": "rahul@gmail.com"
+        }
+    )
+
+    assert response.status_code == 200
+
+    assert b"Invalid Xavier student email" in response.data
+
+
+def test_student_registration():
+
+    app.config["TESTING"] = True
+
+    client = app.test_client()
+
+    response = client.post(
+        "/student-register",
+        data={
+            "college_id": "202403044",
+            "student_name": "Rahul",
+            "email": "202403044.rahul@student.xavier.ac.in"
+        }
+    )
+
+    assert response.status_code == 200
+
+    assert b"Registration successful" in response.data
+
+
+def test_registered_student_can_login():
+
+    app.config["TESTING"] = True
+
+    client = app.test_client()
+
+    response = client.post(
         "/student-login",
         data={
-            "erp_id": "STUDENT001",
-            "password": "student123"
+            "college_id": "202403044",
+            "password": "202403044"
         },
         follow_redirects=False
     )
 
-    assert login_response.status_code == 302
+    assert response.status_code == 302
 
-    response = client.get("/notices")
+    assert response.location.endswith("/notices")
+
+
+def test_wrong_student_password():
+
+    app.config["TESTING"] = True
+
+    client = app.test_client()
+
+    response = client.post(
+        "/student-login",
+        data={
+            "college_id": "202403044",
+            "password": "wrongpassword"
+        },
+        follow_redirects=False
+    )
 
     assert response.status_code == 200
+
+    assert b"Invalid College ID or password" in response.data

@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Notice Details</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<header>
+
+    <div>
+
+        <h1>📢 Digital Notice Board</h1>
+
+        <p>
+            Notice Details
+        </p>
+
+    </div>
+
+    <div class="student-header">
+
+        <span>
+            👨‍🎓
+            Welcome, {{ session.get("student_name") }}
+        </span>
+
+        <a href="/student-logout">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="notice-details">
+
+        {% if notice.important %}
+
+        <span class="important">
+            ⚠️ IMPORTANT
+        </span>
+
+        {% endif %}
+
+        <h2>
+            {{ notice.title }}
+        </h2>
+
+        <p>
+            <b>📂 Category:</b>
+            {{ notice.category }}
+        </p>
+
+        <p>
+            <b>📅 Date:</b>
+            {{ notice.date }}
+        </p>
+
+        <hr>
+
+        <h3>
+            Notice Description
+        </h3>
+
+        <p class="notice-description">
+            {{ notice.description }}
+        </p>
+
+
+        {% if notice.category == "Event"
+              and notice.registration_link %}
+
+        <a
+            href="{{ notice.registration_link }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="register-btn"
+        >
+            🎟️ Register for Event →
+        </a>
+
+        {% endif %}
+
+
+        <br><br>
+
+        <a href="/notices"
+           class="back-button">
+
+            ← Back to Notices
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

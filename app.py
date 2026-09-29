@@ -1,5 +1,7 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+import re
 
 app = Flask(__name__)
 
@@ -7,6 +9,10 @@ DATABASE = "notices.db"
 
 app.secret_key = "digital-notice-board-secret-key"
 
+
+# =========================================================
+# DATABASE CONNECTION
+# =========================================================
 
 def get_db():
 
@@ -16,9 +22,17 @@ def get_db():
     return conn
 
 
+# =========================================================
+# INITIALIZE DATABASE
+# =========================================================
+
 def init_db():
 
     conn = get_db()
+
+    # =====================================================
+    # NOTICES TABLE
+    # =====================================================
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS notices (
@@ -32,6 +46,7 @@ def init_db():
         )
     """)
 
+    # Check registration_link column
     columns = [
         row[1]
         for row in conn.execute(
@@ -44,6 +59,24 @@ def init_db():
         conn.execute(
             "ALTER TABLE notices ADD COLUMN registration_link TEXT"
         )
+
+    # =====================================================
+    # STUDENTS TABLE
+    # =====================================================
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            college_id TEXT UNIQUE NOT NULL,
+            student_name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    """)
+
+    # =====================================================
+    # DEFAULT NOTICES
+    # =====================================================
 
     count = conn.execute(
         "SELECT COUNT(*) FROM notices"
@@ -155,25 +188,239 @@ def role_login():
 
 
 # =========================================================
+# STUDENT REGISTRATION
+# =========================================================
+
+@app.route("/student-register", methods=["GET", "POST"])
+def student_register():
+
+    error = ""
+    success = ""
+
+    if request.method == "POST":
+
+        college_id = request.form.get(
+            "college_id",
+            ""
+        ).strip()
+
+        student_name = request.form.get(
+            "student_name",
+            ""
+        ).strip()
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        # Password automatically becomes College ID
+        password = college_id
+
+        # -------------------------------------------------
+        # Validate College ID
+        # -------------------------------------------------
+
+        if not re.fullmatch(r"\d{9}", college_id):
+
+            error = (
+                "Invalid College ID. "
+                "Enter a valid 9-digit College ID."
+            )
+
+            return render_template(
+                "student_register.html",
+                error=error
+            )
+
+        # -------------------------------------------------
+        # Validate Student Name
+        # -------------------------------------------------
+
+        if not re.fullmatch(
+            r"[A-Za-z ]{2,50}",
+            student_name
+        ):
+
+            error = "Enter a valid student name."
+
+            return render_template(
+                "student_register.html",
+                error=error
+            )
+
+        # -------------------------------------------------
+        # Validate Xavier Student Email
+        # -------------------------------------------------
+
+        email_pattern = (
+            r"^(\d{9})\."
+            r"[a-zA-Z][a-zA-Z0-9._-]*"
+            r"@student\.xavier\.ac\.in$"
+        )
+
+        email_match = re.fullmatch(
+            email_pattern,
+            email
+        )
+
+        if not email_match:
+
+            error = (
+                "Invalid Xavier student email. "
+                "Use format: "
+                "COLLEGEID.studentname@student.xavier.ac.in"
+            )
+
+            return render_template(
+                "student_register.html",
+                error=error
+            )
+
+        # -------------------------------------------------
+        # Check College ID matches Email
+        # -------------------------------------------------
+
+        email_college_id = email_match.group(1)
+
+        if email_college_id != college_id:
+
+            error = (
+                "College ID does not match the ID "
+                "present in the Xavier email."
+            )
+
+            return render_template(
+                "student_register.html",
+                error=error
+            )
+
+        # -------------------------------------------------
+        # Check Existing Student
+        # -------------------------------------------------
+
+        conn = get_db()
+
+        existing_student = conn.execute("""
+            SELECT *
+            FROM students
+            WHERE college_id = ?
+               OR email = ?
+        """, (
+            college_id,
+            email
+        )).fetchone()
+
+        if existing_student:
+
+            conn.close()
+
+            error = (
+                "This College ID or email is already registered."
+            )
+
+            return render_template(
+                "student_register.html",
+                error=error
+            )
+
+        # -------------------------------------------------
+        # Register Student
+        # -------------------------------------------------
+
+        conn.execute("""
+            INSERT INTO students
+            (
+                college_id,
+                student_name,
+                email,
+                password
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            college_id,
+            student_name,
+            email,
+            password
+        ))
+
+        conn.commit()
+        conn.close()
+
+        success = (
+            "Registration successful! "
+            "Your password is your College ID."
+        )
+
+        return render_template(
+            "student_register.html",
+            success=success
+        )
+
+    return render_template(
+        "student_register.html",
+        error=error,
+        success=success
+    )
+
+
+# =========================================================
 # STUDENT LOGIN
 # =========================================================
 
 @app.route("/student-login", methods=["GET", "POST"])
 def student_login():
 
+    error = ""
+
     if request.method == "POST":
 
-        erp_id = request.form["erp_id"]
-        password = request.form["password"]
+        college_id = request.form.get(
+            "college_id",
+            ""
+        ).strip()
 
-        if erp_id == "STUDENT001" and password == "student123":
+        password = request.form.get(
+            "password",
+            ""
+        ).strip()
+
+        conn = get_db()
+
+        student = conn.execute("""
+            SELECT *
+            FROM students
+            WHERE college_id = ?
+              AND password = ?
+        """, (
+            college_id,
+            password
+        )).fetchone()
+
+        conn.close()
+
+        if student:
 
             session["student_logged_in"] = True
-            session["student_erp_id"] = erp_id
 
-            return redirect(url_for("index"))
+            session["student_college_id"] = (
+                student["college_id"]
+            )
 
-    return render_template("student_login.html")
+            session["student_name"] = (
+                student["student_name"]
+            )
+
+            return redirect(
+                url_for("index")
+            )
+
+        error = "Invalid College ID or password."
+
+    return render_template(
+        "student_login.html",
+        error=error
+    )
 
 
 # =========================================================
@@ -185,7 +432,9 @@ def index():
 
     if not session.get("student_logged_in"):
 
-        return redirect(url_for("role_login"))
+        return redirect(
+            url_for("role_login")
+        )
 
     search = request.args.get(
         "search",
@@ -229,7 +478,9 @@ def index():
 
         params.append(category)
 
-    query += " ORDER BY id DESC"
+    query += """
+        ORDER BY id DESC
+    """
 
     notices = conn.execute(
         query,
@@ -247,16 +498,67 @@ def index():
 
 
 # =========================================================
+# NOTICE DETAILS
+# =========================================================
+
+@app.route("/notice/<int:notice_id>")
+def notice_details(notice_id):
+
+    # Only logged-in students can view notice details
+    if not session.get("student_logged_in"):
+
+        return redirect(
+            url_for("role_login")
+        )
+
+    conn = get_db()
+
+    notice = conn.execute("""
+        SELECT *
+        FROM notices
+        WHERE id = ?
+    """, (
+        notice_id,
+    )).fetchone()
+
+    conn.close()
+
+    # Notice does not exist
+    if not notice:
+
+        return "Notice not found", 404
+
+    return render_template(
+        "notice_details.html",
+        notice=notice
+    )
+
+
+# =========================================================
 # STUDENT LOGOUT
 # =========================================================
 
 @app.route("/student-logout")
 def student_logout():
 
-    session.pop("student_logged_in", None)
-    session.pop("student_erp_id", None)
+    session.pop(
+        "student_logged_in",
+        None
+    )
 
-    return redirect(url_for("role_login"))
+    session.pop(
+        "student_college_id",
+        None
+    )
+
+    session.pop(
+        "student_name",
+        None
+    )
+
+    return redirect(
+        url_for("role_login")
+    )
 
 
 # =========================================================
@@ -266,18 +568,33 @@ def student_logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
+    error = ""
+
     if request.method == "POST":
 
         username = request.form["username"]
+
         password = request.form["password"]
 
-        if username == "admin" and password == "admin123":
+        if (
+            username == "admin"
+            and password == "admin123"
+        ):
 
             session["admin_logged_in"] = True
 
-            return redirect(url_for("admin"))
+            return redirect(
+                url_for("admin")
+            )
 
-    return render_template("login.html")
+        error = (
+            "Invalid admin username or password."
+        )
+
+    return render_template(
+        "login.html",
+        error=error
+    )
 
 
 # =========================================================
@@ -289,7 +606,9 @@ def admin():
 
     if not session.get("admin_logged_in"):
 
-        return redirect(url_for("login"))
+        return redirect(
+            url_for("login")
+        )
 
     conn = get_db()
 
@@ -316,7 +635,9 @@ def add_notice():
 
     if not session.get("admin_logged_in"):
 
-        return redirect(url_for("login"))
+        return redirect(
+            url_for("login")
+        )
 
     if request.method == "POST":
 
@@ -364,9 +685,169 @@ def add_notice():
         conn.commit()
         conn.close()
 
-        return redirect(url_for("admin"))
+        return redirect(
+            url_for("admin")
+        )
 
-    return render_template("add_notice.html")
+    return render_template(
+        "add_notice.html"
+    )
+
+
+# =========================================================
+# EDIT NOTICE
+# =========================================================
+
+@app.route(
+    "/edit/<int:notice_id>",
+    methods=["GET", "POST"]
+)
+def edit_notice(notice_id):
+
+    # Only logged-in admin can edit notices
+    if not session.get("admin_logged_in"):
+
+        return redirect(
+            url_for("login")
+        )
+
+    conn = get_db()
+
+    # Find the notice
+    notice = conn.execute("""
+        SELECT *
+        FROM notices
+        WHERE id = ?
+    """, (
+        notice_id,
+    )).fetchone()
+
+    # Notice does not exist
+    if not notice:
+
+        conn.close()
+
+        return "Notice not found", 404
+
+    # -----------------------------------------------------
+    # UPDATE NOTICE
+    # -----------------------------------------------------
+
+    if request.method == "POST":
+
+        title = request.form.get(
+            "title",
+            ""
+        ).strip()
+
+        category = request.form.get(
+            "category",
+            ""
+        ).strip()
+
+        date = request.form.get(
+            "date",
+            ""
+        ).strip()
+
+        description = request.form.get(
+            "description",
+            ""
+        ).strip()
+
+        registration_link = request.form.get(
+            "registration_link",
+            ""
+        ).strip()
+
+        important = (
+            1
+            if "important" in request.form
+            else 0
+        )
+
+        # Basic validation
+        if not title:
+
+            conn.close()
+
+            return render_template(
+                "edit_notice.html",
+                notice=notice,
+                error="Notice title cannot be empty."
+            )
+
+        if not category:
+
+            conn.close()
+
+            return render_template(
+                "edit_notice.html",
+                notice=notice,
+                error="Please select a category."
+            )
+
+        if not date:
+
+            conn.close()
+
+            return render_template(
+                "edit_notice.html",
+                notice=notice,
+                error="Please select a date."
+            )
+
+        if not description:
+
+            conn.close()
+
+            return render_template(
+                "edit_notice.html",
+                notice=notice,
+                error="Notice description cannot be empty."
+            )
+
+        # -------------------------------------------------
+        # Update database
+        # -------------------------------------------------
+
+        conn.execute("""
+            UPDATE notices
+
+            SET
+                title = ?,
+                category = ?,
+                date = ?,
+                description = ?,
+                important = ?,
+                registration_link = ?
+
+            WHERE id = ?
+        """, (
+            title,
+            category,
+            date,
+            description,
+            important,
+            registration_link,
+            notice_id
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(
+            url_for("admin")
+        )
+
+    # GET request
+    conn.close()
+
+    return render_template(
+        "edit_notice.html",
+        notice=notice,
+        error=""
+    )
 
 
 # =========================================================
@@ -378,7 +859,9 @@ def delete_notice(notice_id):
 
     if not session.get("admin_logged_in"):
 
-        return redirect(url_for("login"))
+        return redirect(
+            url_for("login")
+        )
 
     conn = get_db()
 
@@ -390,7 +873,9 @@ def delete_notice(notice_id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("admin"))
+    return redirect(
+        url_for("admin")
+    )
 
 
 # =========================================================
@@ -405,11 +890,13 @@ def admin_logout():
         None
     )
 
-    return redirect(url_for("role_login"))
+    return redirect(
+        url_for("role_login")
+    )
 
 
 # =========================================================
-# START APPLICATION
+# RUN APPLICATION
 # =========================================================
 
 if __name__ == "__main__":

@@ -598,3 +598,170 @@ label input[type="checkbox"] {
     }
 
 }
+/* =========================================
+   STUDENT REGISTRATION
+   ========================================= */
+
+.student-register-box {
+    text-align: center;
+}
+
+.student-register-box form {
+    margin-top: 20px;
+}
+
+.student-register-box input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+}
+
+.student-register-box small {
+    display: block;
+    text-align: left;
+    margin-bottom: 15px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.password-info {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 15px 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.success-message {
+    background: #dcfce7;
+    color: #166534;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.register-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.register-section p {
+    margin-bottom: 8px;
+    color: #6b7280;
+}
+
+.register-link {
+    color: #4f46e5;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+.role-register {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.role-register p {
+    margin-bottom: 5px;
+}
+
+.role-register a {
+    color: #4f46e5;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.role-register a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   STUDENT HEADER
+   ========================================= */
+
+.student-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.student-header span {
+    color: white;
+    font-weight: bold;
+}
+
+.student-header a {
+    background: white;
+    color: #4f46e5;
+    padding: 9px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.student-header a:hover {
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    .student-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 15px;
+    }
+
+}
+/* =========================================
+   EDIT NOTICE
+   ========================================= */
+
+.edit-button {
+    display: inline-block;
+    background: #4f46e5;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.edit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cancel-button {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: bold;
+}

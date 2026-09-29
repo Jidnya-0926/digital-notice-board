@@ -58,7 +58,10 @@
             {{ notice.description }}
         </p>
 
-
+<a href="/edit/{{ notice.id }}"
+   class="edit-button">
+    ✏️ Edit
+</a>
         <a href="/delete/{{ notice.id }}"
            onclick="return confirm('Delete this notice?')">
 

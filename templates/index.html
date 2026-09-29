@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -14,11 +15,28 @@
 
 <header>
 
-    <h1>📢 Digital Notice Board</h1>
+    <div>
 
-    <p>College Notice Management System</p>
+        <h1>📢 Digital Notice Board</h1>
 
-    <a href="/login">Admin Login</a>
+        <p>
+            College Notice Management System
+        </p>
+
+    </div>
+
+    <div class="student-header">
+
+        <span>
+            👨‍🎓
+            Welcome, {{ session.get("student_name") }}
+        </span>
+
+        <a href="/student-logout">
+            Logout
+        </a>
+
+    </div>
 
 </header>
 
@@ -28,9 +46,10 @@
     <h2>Latest Notices</h2>
 
 
-    <!-- Search and Filter -->
+    <!-- SEARCH AND FILTER -->
 
-    <form method="GET" class="filter-form">
+    <form method="GET"
+          class="filter-form">
 
         <input
             type="text"
@@ -39,7 +58,6 @@
             value="{{ search }}"
         >
 
-
         <select name="category">
 
             <option value="">
@@ -47,27 +65,42 @@
             </option>
 
             <option value="Examination"
-                {% if category == "Examination" %}selected{% endif %}>
+                {% if category == "Examination" %}
+                selected
+                {% endif %}>
+
                 📝 Examination
+
             </option>
 
             <option value="Event"
-                {% if category == "Event" %}selected{% endif %}>
+                {% if category == "Event" %}
+                selected
+                {% endif %}>
+
                 🎉 Event
+
             </option>
 
             <option value="Academic"
-                {% if category == "Academic" %}selected{% endif %}>
+                {% if category == "Academic" %}
+                selected
+                {% endif %}>
+
                 🎓 Academic
+
             </option>
 
             <option value="General"
-                {% if category == "General" %}selected{% endif %}>
+                {% if category == "General" %}
+                selected
+                {% endif %}>
+
                 📢 General
+
             </option>
 
         </select>
-
 
         <button type="submit">
             Search
@@ -76,14 +109,11 @@
     </form>
 
 
-    <!-- Notices -->
+    <!-- NOTICE LIST -->
 
     {% for notice in notices %}
 
     <div class="notice">
-
-
-        <!-- Important Badge -->
 
         {% if notice.important %}
 
@@ -94,39 +124,50 @@
         {% endif %}
 
 
-        <!-- Notice Title -->
-
         <h3>
             {{ notice.title }}
         </h3>
 
 
-        <!-- Category -->
-
         <p>
+
             <b>📂 Category:</b>
+
             {{ notice.category }}
+
         </p>
 
-
-        <!-- Date -->
 
         <p>
+
             <b>📅 Date:</b>
+
             {{ notice.date }}
+
         </p>
 
-
-        <!-- Description -->
 
         <p>
             {{ notice.description }}
         </p>
 
 
-        <!-- Event Registration -->
+        <!-- VIEW DETAILS BUTTON -->
 
-        {% if notice.category == "Event" and notice.registration_link %}
+        <a
+            href="/notice/{{ notice.id }}"
+            class="view-details-button"
+        >
+
+            👁️ View Details →
+
+        </a>
+
+
+        <!-- EVENT REGISTRATION -->
+
+        {% if notice.category == "Event"
+              and notice.registration_link %}
 
         <a
             href="{{ notice.registration_link }}"
@@ -134,7 +175,9 @@
             rel="noopener noreferrer"
             class="register-btn"
         >
+
             🎟️ Register Now →
+
         </a>
 
         {% endif %}
@@ -145,16 +188,19 @@
     {% endfor %}
 
 
-    <!-- No Notices -->
+    <!-- NO NOTICES -->
 
     {% if not notices %}
 
     <div class="no-notices">
 
-        <h3>😕 No notices found</h3>
+        <h3>
+            😕 No notices found
+        </h3>
 
         <p>
-            Try searching with a different keyword or category.
+            Try searching with a different keyword
+            or category.
         </p>
 
     </div>
